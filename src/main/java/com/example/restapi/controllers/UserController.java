@@ -1,11 +1,19 @@
 package com.example.restapi.controllers;
 
 import com.example.restapi.entities.User;
+import com.example.restapi.exceptions.UserAlreadyExistsException;
+import com.example.restapi.exceptions.UserNotFoundException;
 import com.example.restapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -20,30 +28,56 @@ public class UserController {
 
     // create User
     @PostMapping("/users")
-    public User createUser(@RequestBody User user){
+    public ResponseEntity<Void> createUser(@RequestBody User user , UriComponentsBuilder builder) {
         // here what ever we provide in the request body in the Postman, that will automatically be stored in the "user"
         // for making things happen, advantage of JPA
-        return userService.createUser(user);
+        try {
+
+            userService.createUser(user);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(builder.path("/users/{id}").buildAndExpand(user.getId()).toUri());
+            return new ResponseEntity<Void>(headers , HttpStatus.CREATED);
+
+        } catch (UserAlreadyExistsException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , exception.getMessage());
+        }
     }
 
     // get By Id
     @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable("id") Long id){
+    public Optional<User> getUserById(@PathVariable("id") Long id) {
         // @PathVariable -> extract whatever value is given in place of id, in the url
         // and assign that value to "id" variable
-        return userService.getUserById(id);
+        try {
+            return userService.getUserById(id);
+        }
+        catch (UserNotFoundException exception){
+            // here we are specifying the Error using the HttpsStatus in order to send the Status codes, like 201, 404
+            // and then we can pass some custom String message, but we choose to make it simple and pass the message
+            // that comes from the variable itself.
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND , exception.getMessage());
+        }
     }
 
     // update By Id
     @PutMapping("/users/{id}")
-    public User updateUserById(@PathVariable("id") Long id , @RequestBody User user){
-        return userService.updateUserById(id , user);
+    public User updateUserById(@PathVariable("id") Long id , @RequestBody User user) {
+        try {
+            return userService.updateUserById(id, user);
+        }
+        catch (UserNotFoundException exception){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , exception.getMessage());
+        }
     }
-
     // delete by Id
     @DeleteMapping("/users/{id}")
-    public void deleteUserById(@PathVariable("id") Long id){
-        userService.deleteUserById(id);
+    public void deleteUserById(@PathVariable("id") Long id) {
+        try {
+            userService.deleteUserById(id);
+        }
+        catch (UserNotFoundException exception){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , exception.getMessage());
+        }
     }
 
     @GetMapping("/users/byUsername/{username}")
