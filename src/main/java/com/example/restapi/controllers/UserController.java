@@ -21,18 +21,21 @@ import java.util.Optional;
 
 @RestController
 @Validated
+@RequestMapping(value = "/users")
+// By this we are saying that, for every Mapping that we will be using below, append "/users" as prefix
+// while writing the API Url
 public class UserController {
     @Autowired
     private UserService userService;
 
     // get User
-    @GetMapping("/users")
+    @GetMapping
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
 
     // create User
-    @PostMapping("/users")
+    @PostMapping
     public ResponseEntity<Void> createUser(@Valid @RequestBody User user , UriComponentsBuilder builder) {
         // here what ever we provide in the request body in the Postman, that will automatically be stored in the "user"
         // for making things happen, advantage of JPA
@@ -49,7 +52,7 @@ public class UserController {
     }
 
     // get By Id
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public Optional<User> getUserById(@PathVariable("id") @Min(1) Long id) {
         // @PathVariable -> extract whatever value is given in place of id, in the url
         // and assign that value to "id" variable
@@ -65,7 +68,7 @@ public class UserController {
     }
 
     // update By Id
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     public User updateUserById(@PathVariable("id") Long id , @RequestBody User user) {
         try {
             return userService.updateUserById(id, user);
@@ -75,7 +78,7 @@ public class UserController {
         }
     }
     // delete by Id
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public void deleteUserById(@PathVariable("id") Long id) {
         try {
             userService.deleteUserById(id);
@@ -85,7 +88,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/byUsername/{username}")
+    @GetMapping("/byUsername/{username}")
     public User getUserByUsername(@PathVariable("username") String username) throws UserNameNotFoundException {
         User user = userService.getUserByUsername(username);
         if(user == null){
