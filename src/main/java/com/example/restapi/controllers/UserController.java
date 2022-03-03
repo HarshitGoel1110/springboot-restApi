@@ -2,20 +2,25 @@ package com.example.restapi.controllers;
 
 import com.example.restapi.entities.User;
 import com.example.restapi.exceptions.UserAlreadyExistsException;
+import com.example.restapi.exceptions.UserNameNotFoundException;
 import com.example.restapi.exceptions.UserNotFoundException;
 import com.example.restapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Validated
 public class UserController {
     @Autowired
     private UserService userService;
@@ -28,7 +33,7 @@ public class UserController {
 
     // create User
     @PostMapping("/users")
-    public ResponseEntity<Void> createUser(@RequestBody User user , UriComponentsBuilder builder) {
+    public ResponseEntity<Void> createUser(@Valid @RequestBody User user , UriComponentsBuilder builder) {
         // here what ever we provide in the request body in the Postman, that will automatically be stored in the "user"
         // for making things happen, advantage of JPA
         try {
@@ -45,7 +50,7 @@ public class UserController {
 
     // get By Id
     @GetMapping("/users/{id}")
-    public Optional<User> getUserById(@PathVariable("id") Long id) {
+    public Optional<User> getUserById(@PathVariable("id") @Min(1) Long id) {
         // @PathVariable -> extract whatever value is given in place of id, in the url
         // and assign that value to "id" variable
         try {
@@ -81,8 +86,12 @@ public class UserController {
     }
 
     @GetMapping("/users/byUsername/{username}")
-    public User getUserByUsername(@PathVariable("username") String username){
-        return userService.getUserByUsername(username);
+    public User getUserByUsername(@PathVariable("username") String username) throws UserNameNotFoundException {
+        User user = userService.getUserByUsername(username);
+        if(user == null){
+            throw new UserNameNotFoundException("UserName not found, kindly provide the correct one");
+        }
+        return user;
     }
 
 }
