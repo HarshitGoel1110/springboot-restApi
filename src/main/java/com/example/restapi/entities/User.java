@@ -1,5 +1,7 @@
 package com.example.restapi.entities;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -7,10 +9,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends RepresentationModel {
     @Id
     @GeneratedValue
-    private Long id;
+    private Long userId;
 
     @NotEmpty(message = "Username is a mandatory field, kindly provide it to proceed")
     @Column(name = "USER_NAME" , length = 50 , nullable = false , unique = true)
@@ -38,8 +40,8 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username, String firstname, String lastname, String email, String role, String ssn) {
-        this.id = id;
+    public User(Long userId, String username, String firstname, String lastname, String email, String role, String ssn) {
+        this.userId = userId;
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -48,12 +50,12 @@ public class User {
         this.ssn = ssn;
     }
 
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -115,7 +117,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + userId +
                 ", username='" + username + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
