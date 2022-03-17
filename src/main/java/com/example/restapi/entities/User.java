@@ -34,6 +34,7 @@ public class User extends RepresentationModel {
     @Column(name = "SSN" , length = 50 , nullable = false , unique = true)
     private String ssn;
 
+    // it means one user can place many orders
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
 

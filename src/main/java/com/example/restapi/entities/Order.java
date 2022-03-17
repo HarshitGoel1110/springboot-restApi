@@ -14,6 +14,8 @@ public class Order extends RepresentationModel {
 
     private String orderDescription;
 
+
+    // it means many orders can be placed by one user
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private User user;
