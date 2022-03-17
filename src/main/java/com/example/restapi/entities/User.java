@@ -1,5 +1,6 @@
 package com.example.restapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.hateoas.RepresentationModel;
@@ -11,7 +12,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "user")
-@JsonIgnoreProperties({"firstname" , "lastname"})
+//@JsonIgnoreProperties({"firstname" , "lastname"}) ---- Part of Static Filtering
+
+// here we are specifying the id that we have used in the JacksonFilterMapping Controller
+@JsonFilter(value = "useFilter")
 public class User extends RepresentationModel {
     @Id
     @GeneratedValue
@@ -34,8 +38,8 @@ public class User extends RepresentationModel {
     @Column(name = "ROLE" , length = 50 , nullable = false)
     private String role;
 
-    @Column(name = "SSN" , length = 50 , nullable = true , unique = true)
-    @JsonIgnore
+    @Column(name = "SSN" , length = 50 , nullable = false , unique = true)
+//    @JsonIgnore ---- Part of Static Filtering
     private String ssn;
 
     // it means one user can place many orders
