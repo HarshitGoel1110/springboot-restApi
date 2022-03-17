@@ -3,6 +3,7 @@ package com.example.restapi.entities;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
@@ -15,35 +16,43 @@ import java.util.List;
 //@JsonIgnoreProperties({"firstname" , "lastname"}) ---- Part of Static Filtering
 
 // here we are specifying the id that we have used in the JacksonFilterMapping Controller
-@JsonFilter(value = "useFilter")
+//@JsonFilter(value = "useFilter")
 public class User extends RepresentationModel {
     @Id
     @GeneratedValue
+    @JsonView(Views.External.class)
     private Long userId;
 
     @NotEmpty(message = "Username is a mandatory field, kindly provide it to proceed")
     @Column(name = "USER_NAME" , length = 50 , nullable = false , unique = true)
+    @JsonView(Views.External.class)
     private String username;
 
     @Size(min = 2 , message = "First Name should have at least 2 characters")
     @Column(name = "FIRST_NAME" , length = 50 , nullable = false)
+    @JsonView(Views.External.class)
     private String firstname;
 
     @Column(name = "LAST_NAME" , length = 50 , nullable = false)
+    @JsonView(Views.External.class)
     private String lastname;
 
     @Column(name = "EMAIL_ADDRESS" , length = 50 , nullable = false)
+    @JsonView(Views.External.class)
     private String email;
 
     @Column(name = "ROLE" , length = 50 , nullable = false)
+    @JsonView(Views.Internal.class)
     private String role;
 
     @Column(name = "SSN" , length = 50 , nullable = false , unique = true)
 //    @JsonIgnore ---- Part of Static Filtering
+    @JsonView(Views.Internal.class)
     private String ssn;
 
     // it means one user can place many orders
     @OneToMany(mappedBy = "user")
+    @JsonView(Views.Internal.class)
     private List<Order> orders;
 
     public User() {
