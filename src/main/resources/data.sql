@@ -1,6 +1,6 @@
-INSERT INTO USER VALUES (101, 'abc@gmail.com' , 'abc' , 'Goel', 'sde', 'ssn101', 'abc');
-INSERT INTO USER VALUES (102, 'def@gmail.com' , 'def' , 'Goel', 'sde', 'ssn102', 'def');
-INSERT INTO USER VALUES (103, 'ghi@gmail.com' , 'ghi' , 'Goel', 'sde', 'ssn103', 'ghi');
+INSERT INTO USER VALUES (101 , 'Bengaluru' , 'abc@gmail.com' , 'abc' , 'Goel', 'sde', 'ssn101', 'abc');
+INSERT INTO USER VALUES (102 , 'Chennai' , 'def@gmail.com' , 'def' , 'Goel', 'sde', 'ssn102', 'def');
+INSERT INTO USER VALUES (103 , 'Delhi' , 'ghi@gmail.com' , 'ghi' , 'Goel', 'sde', 'ssn103', 'ghi');
 
 insert into orders values (2001 , 'order11' , 101);
 insert into orders values (2002 , 'order12' , 101);

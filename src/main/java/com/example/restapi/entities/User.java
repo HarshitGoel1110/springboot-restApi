@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
@@ -55,10 +56,13 @@ public class User extends RepresentationModel {
     @JsonView(Views.Internal.class)
     private List<Order> orders;
 
+    @Column(name = "ADDRESS")
+    private String address;
+
     public User() {
     }
 
-    public User(Long userId, String username, String firstname, String lastname, String email, String role, String ssn) {
+    public User(Long userId, String username, String firstname, String lastname, String email, String role, String ssn, List<Order> orders, String address) {
         this.userId = userId;
         this.username = username;
         this.firstname = firstname;
@@ -66,6 +70,8 @@ public class User extends RepresentationModel {
         this.email = email;
         this.role = role;
         this.ssn = ssn;
+        this.orders = orders;
+        this.address = address;
     }
 
     public Long getUserId() {
@@ -132,16 +138,26 @@ public class User extends RepresentationModel {
         this.orders = orders;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + userId +
+                "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
                 ", ssn='" + ssn + '\'' +
+                ", orders=" + orders +
+                ", address='" + address + '\'' +
                 '}';
     }
 }
